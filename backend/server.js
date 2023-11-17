@@ -1,24 +1,23 @@
-const { application } = require('express');
 const express = require('express');
-const { chats } = require('./data/data.js');
 const dotenv = require("dotenv")
 const cors = require('cors')
+const db = require('./config/db.js')
+const userRoutes = require('./routes/userRoutes.js')
+
 
 const app = express();
 dotenv.config()
+
+db.connectDB()
+
 app.use(cors())
+app.use(express.json()) //to accept json data from frontend
+
 app.get("/", (req, res) => {
     res.send("API is Running")
 })
 
-app.get('/api/chat', (req, res) => {
-    res.send(chats)
-})
-
-app.get('/api/chat/:id', (req, res) => {
-    const singleChat = chats.find((c) => c._id === req.params.id);
-    res.send(singleChat)
-})
+app.use("/api/user", userRoutes)
 
 const PORT = process.env.PORT || 5000
 
